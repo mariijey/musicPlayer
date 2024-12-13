@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .time-music {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+      }
+      .box-player {
+        width: 350px;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        padding: 25px;
+        text-align: center;
+        border-radius: 15px;
+        background-color: white;
+      }
+      .name-music {
+        margin-bottom: 15px;
+        font-size: 24px;
+        color: #333;
+        font-weight: bold;
+      }
+      #audio-player {
+        -webkit-appearance: none;
+        width: 100%;
+        background: #f4f4f4;
+        margin: 15px 0;
+        border-radius: 15px;
+        height: 5px;
+      }
+      .box-player {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background:  linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+     
+      }
+      .box-player button {
+        border-radius: 50%;
+        padding: 10px;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+          rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+        border: none;
+        
+      }
+
+
+    </style>
+  </head>
+  <body>
+    <div class="box-player">
+      <p class="name-music"></p>
+      <span class="singer"></span>
+      <input type="range" id="audio-player" min="0"  value="0" />
+      <div class="time-music">
+        <span class="current-time">00:00</span>
+        <span class="total-time">00:00</span>
+      </div>
+      <div class="play-controllers" id="controllers">
+        <button id="previous">◀◀</button>
+        <button id="play">◀</button>
+        <button id="next">▶▶</button>
+      </div>
+      <audio id="audio" class="audio">
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+    <script>
+      //constants
+      const musicList = [
+        {
+          id: 0,
+          name: "Someone like you",
+          singer: "Addel",
+          isFavor: false,
+          src: "./files/Adele-Someone-Like-You-(TrendyBeatz.com).mp3",
+        },
+        {
+          id: 1,
+          name: "dont you remember",
+          singer: "AAddel",
+          isFavor: false,
+          src: "./files/Dont_You_Remember.mp3",
+        },
+        {
+          id: 2,
+          name: "Bad Blood",
+          singer: "Tailor",
+          isFavor: false,
+          src: "./files/09. - Taylor Swift - Bad Blood (128).mp3",
+        },
+      ];
+      var currentIndexTrack = 0;
+      var audio = document.getElementById("audio");
+      var playButton = document.getElementById("play");
+      var previousButton = document.getElementById("previous");
+      var nextButton = document.getElementById("next");
+      var controllers = document.getElementById("controllers");
+      var currentTime = document.querySelector(".current-time");
+      var totalTime = document.querySelector(".total-time");
+      var progressBar = document.getElementById("audio-player")
+
+      controllers.addEventListener("click", function (e) {
+        if (event.target.id === "previous") {
+          previous();
+        }
+        if (event.target.id === "next") {
+          next();
+        }
+      });
+
+      //load track music
+      function loadMusic() {
+        console.log("index", currentIndexTrack);
+        var src = musicList[currentIndexTrack].src;
+        console.log(src);
+        audio.setAttribute("src", src);
+        document.querySelector(".name-music").innerHTML =
+          musicList[currentIndexTrack].name;
+        document.querySelector(".singer").innerHTML =
+          musicList[currentIndexTrack].singer;
+        audio.onerror = function () {
+          console.error("Failed to load audio:", audio.error);
+        };
+        audio.load();
+        audio.play();
+      }
+
+      //play music
+      playButton.addEventListener("click", function () {
+        if (
+          currentIndexTrack >= 0 &&
+          currentIndexTrack < musicList.length - 1
+        ) {
+          console.log("audio.play", audio.paused);
+          if (audio.paused) {
+            loadMusic() // Start playing if paused
+            playButton.innerText = "❚❚";
+          } else {
+            audio.pause(); // Pause if playing
+            playButton.innerText = "▶";
+          }
+        } else {
+          console.error("invalid file", currentIndexTrack);
+        }
+      });
+
+      //next music
+      function next() {
+        currentIndexTrack++;
+        if (currentIndexTrack > musicList.length - 1) {
+          currentIndexTrack = 0;
+        }
+        loadMusic();
+      }
+
+      //previous music
+      function previous() {
+        currentIndexTrack--;
+        if (currentIndexTrack < 0) {
+          currentIndexTrack = musicList.length - 1;
+        }
+        loadMusic();
+      }
+
+      function formatTime(time){
+        var minuets = Math.floor(time/60);
+        var seconds = Math.floor(time%60)
+        return minuets+ ":" +seconds;
+      }
+
+      // Update current time and progress bar dynamically 
+      audio.addEventListener("timeupdate", function(){
+       var time = formatTime(audio.currentTime)
+       currentTime.innerHTML = time;
+       progressBar.value = Math.floor(audio.currentTime)
+       
+      })
+
+      //total time music
+      audio.addEventListener("loadedmetadata", function(){
+        var time = formatTime(audio.duration)
+        totalTime.innerHTML = time ;
+        progressBar.max = Math.floor(audio.duration);
+      })
+      
+    //  progressBar
+      progressBar.addEventListener("input" , function(){
+        audio.currentTime = progressBar.value
+      })
+
+    </script>
+  </body>
+</html>
