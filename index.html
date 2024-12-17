@@ -41,12 +41,12 @@
       }
       .box-player {
         display: flex;
+        margin-right: 10px;
         flex-direction: column;
         justify-content: center;
         align-items: center;
         text-align: center;
-        background:  linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-     
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
       }
       .box-player button {
         border-radius: 50%;
@@ -57,30 +57,73 @@
         box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
           rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
         border: none;
-        
       }
 
+      .container-controllers {
+        display: flex;
+      }
 
+      #favor {
+        border-radius: 10px;
+        font-size: 25px;
+        background-color: transparent;
+        transform: translate(70px, 10px);
+        width: 40px;
+        height: 40px;
+        padding: 0px;
+        text-align: center;
+        /* display: flex; */
+        justify-content: center;
+        align-items: center;
+      }
+      .track {
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+      }
+      #container-favor-list {
+        width: 100%;
+      }
+      .box-player h1 {
+        color: gray;
+      }
+      .active {
+        color: red;
+      }
     </style>
   </head>
   <body>
     <div class="box-player">
       <p class="name-music"></p>
       <span class="singer"></span>
-      <input type="range" id="audio-player" min="0"  value="0" />
+      <input type="range" id="audio-player" min="0" value="0" />
       <div class="time-music">
         <span class="current-time">00:00</span>
         <span class="total-time">00:00</span>
       </div>
-      <div class="play-controllers" id="controllers">
-        <button id="previous">◀◀</button>
-        <button id="play">◀</button>
-        <button id="next">▶▶</button>
+      <div class="container-controllers">
+        <div class="play-controllers" id="controllers">
+          <button id="previous">◀◀</button>
+          <button id="play">◀</button>
+          <button id="next">▶▶</button>
+          <button id="favor">🤍</button>
+        </div>
       </div>
       <audio id="audio" class="audio">
         Your browser does not support the audio element.
       </audio>
     </div>
+    <!-- list of favor tracks -->
+    <div class="box-player">
+      <h1>Favor List</h1>
+      <div id="container-favor-list"></div>
+    </div>
+    <!-- list all tracks -->
+    <div class="box-player">
+      <h1>All Tracks</h1>
+      <div id="container-all-music"></div>
+    </div>
+
     <script>
       //constants
       const musicList = [
@@ -107,6 +150,7 @@
         },
       ];
       var currentIndexTrack = 0;
+      var favorList = [];
       var audio = document.getElementById("audio");
       var playButton = document.getElementById("play");
       var previousButton = document.getElementById("previous");
@@ -114,7 +158,8 @@
       var controllers = document.getElementById("controllers");
       var currentTime = document.querySelector(".current-time");
       var totalTime = document.querySelector(".total-time");
-      var progressBar = document.getElementById("audio-player")
+      var progressBar = document.getElementById("audio-player");
+      var favor = document.getElementById("favor");
 
       controllers.addEventListener("click", function (e) {
         if (event.target.id === "previous") {
@@ -127,37 +172,99 @@
 
       //load track music
       function loadMusic() {
-        console.log("index", currentIndexTrack);
         var src = musicList[currentIndexTrack].src;
-        console.log(src);
         audio.setAttribute("src", src);
         document.querySelector(".name-music").innerHTML =
           musicList[currentIndexTrack].name;
         document.querySelector(".singer").innerHTML =
           musicList[currentIndexTrack].singer;
-        audio.onerror = function () {
-          console.error("Failed to load audio:", audio.error);
-        };
+        if (musicList[currentIndexTrack].isFavor) {
+          favor.innerHTML = "💖";
+        } else {
+          favor.innerHTML = "🤍";
+        }
         audio.load();
         audio.play();
+        favor.addEventListener("click", function () {
+          toggleFavorList(currentIndexTrack);
+        });
+      }
+
+      //render all music
+      function renderAllMusic() {
+        var containerAllMusic = document.getElementById("container-all-music");
+
+        musicList.forEach(function (track, i) {
+          var div = document.createElement("div");
+          div.classList.add("track");
+          div.innerHTML = `<p>${track.name} - ${track.singer}</p>`;
+          containerAllMusic.appendChild(div);
+          div.addEventListener("click", function () {
+            currentIndexTrack = track.id;
+            if (
+              currentIndexTrack >= 0 &&
+              currentIndexTrack <= musicList.length - 1
+            ) {
+              if (audio.paused) {
+                loadMusic(); // Start playing if paused
+                playButton.innerText = "❚❚";
+              } else {
+                audio.pause(); // Pause if playing
+                playButton.innerText = "▶";
+              }
+            }
+          });
+        });
+      }
+      renderAllMusic();
+
+      //render favor music list
+      function renderFavorList(favorList) {
+        var containerList = document.getElementById("container-favor-list");
+        containerList.innerHTML = "";
+        favorList.forEach(function (favorTrack, i) {
+          var div = document.createElement("div");
+          div.classList.add("track");
+          div.innerHTML = `<p>${favorTrack.name} - ${favorTrack.singer}</p>`;
+          containerList.appendChild(div);
+        });
+      }
+
+      function toggleFavorList(currentIndexTrack) {
+        var track = musicList.find(function (item, i) {
+          return item.id === currentIndexTrack;
+        });
+        console.log("track", track);
+        if (track) {
+          track.isFavor = !track.isFavor; // Toggle isFavor
+          if (track.isFavor) {
+            favor.innerHTML = "💖";
+            favorList.push(track); // Add to favorite list
+            console.log("favorList", favorList, "track.isFavor", track.isFavor);
+          } else {
+            favor.innerHTML = "🤍";
+            favorList = favorList.filter(
+              (item) => item.id !== currentIndexTrack
+            ); // Remove from favorite list
+            console.log("favorList", favorList, "track.isFavor", track.isFavor);
+          }
+          renderFavorList(favorList); // Update the UI
+        }
       }
 
       //play music
       playButton.addEventListener("click", function () {
         if (
           currentIndexTrack >= 0 &&
-          currentIndexTrack < musicList.length - 1
+          currentIndexTrack <= musicList.length - 1
         ) {
-          console.log("audio.play", audio.paused);
           if (audio.paused) {
-            loadMusic() // Start playing if paused
+            loadMusic(); // Start playing if paused
             playButton.innerText = "❚❚";
           } else {
             audio.pause(); // Pause if playing
             playButton.innerText = "▶";
           }
-        } else {
-          console.error("invalid file", currentIndexTrack);
         }
       });
 
@@ -179,32 +286,30 @@
         loadMusic();
       }
 
-      function formatTime(time){
-        var minuets = Math.floor(time/60);
-        var seconds = Math.floor(time%60)
-        return minuets+ ":" +seconds;
+      function formatTime(time) {
+        var minuets = Math.floor(time / 60);
+        var seconds = Math.floor(time % 60);
+        return minuets + ":" + seconds;
       }
 
-      // Update current time and progress bar dynamically 
-      audio.addEventListener("timeupdate", function(){
-       var time = formatTime(audio.currentTime)
-       currentTime.innerHTML = time;
-       progressBar.value = Math.floor(audio.currentTime)
-       
-      })
+      // Update current time and progress bar dynamically
+      audio.addEventListener("timeupdate", function () {
+        var time = formatTime(audio.currentTime);
+        currentTime.innerHTML = time;
+        progressBar.value = Math.floor(audio.currentTime);
+      });
 
       //total time music
-      audio.addEventListener("loadedmetadata", function(){
-        var time = formatTime(audio.duration)
-        totalTime.innerHTML = time ;
+      audio.addEventListener("loadedmetadata", function () {
+        var time = formatTime(audio.duration);
+        totalTime.innerHTML = time;
         progressBar.max = Math.floor(audio.duration);
-      })
-      
-    //  progressBar
-      progressBar.addEventListener("input" , function(){
-        audio.currentTime = progressBar.value
-      })
+      });
 
+      //  progressBar
+      progressBar.addEventListener("input", function () {
+        audio.currentTime = progressBar.value;
+      });
     </script>
   </body>
 </html>
