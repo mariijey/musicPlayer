@@ -63,6 +63,7 @@
         display: flex;
       }
 
+      #shuffle,
       #favor {
         border-radius: 10px;
         font-size: 25px;
@@ -76,6 +77,10 @@
         justify-content: center;
         align-items: center;
       }
+      #shuffle {
+        transform: translate(70px, 10px);
+      }
+
       .track {
         display: flex;
         width: 100%;
@@ -107,6 +112,7 @@
           <button id="play">◀</button>
           <button id="next">▶▶</button>
           <button id="favor">🤍</button>
+          <button id="shuffle">⇄</button>
         </div>
       </div>
       <audio id="audio" class="audio">
@@ -126,7 +132,7 @@
 
     <script>
       //constants
-      const musicList = [
+      var musicList = [
         {
           id: 0,
           name: "Someone like you",
@@ -138,7 +144,7 @@
           id: 1,
           name: "dont you remember",
           singer: "AAddel",
-          isFavor: false,
+          isFavor: true,
           src: "./files/Dont_You_Remember.mp3",
         },
         {
@@ -160,6 +166,8 @@
       var totalTime = document.querySelector(".total-time");
       var progressBar = document.getElementById("audio-player");
       var favor = document.getElementById("favor");
+      var shuffleBtn = document.getElementById("shuffle");
+      console.log("audio", audio);
 
       controllers.addEventListener("click", function (e) {
         if (event.target.id === "previous") {
@@ -167,6 +175,9 @@
         }
         if (event.target.id === "next") {
           next();
+        }
+        if (event.target.id === "shuffle") {
+          shuffle();
         }
       });
 
@@ -178,23 +189,44 @@
           musicList[currentIndexTrack].name;
         document.querySelector(".singer").innerHTML =
           musicList[currentIndexTrack].singer;
-        if (musicList[currentIndexTrack].isFavor) {
-          favor.innerHTML = "💖";
-        } else {
-          favor.innerHTML = "🤍";
-        }
+        // if (musicList[currentIndexTrack].isFavor) {
+        //   favor.innerHTML = "💖";
+        // } else {
+        //   favor.innerHTML = "🤍";
+        // }
+        favor.innerHTML = musicList[currentIndexTrack].isFavor ? "💖" : "🤍";
+
         audio.load();
         audio.play();
-        favor.addEventListener("click", function () {
-          toggleFavorList(currentIndexTrack);
-        });
+        // favor.addEventListener("click", function () {
+        //   toggleFavorList(currentIndexTrack);
+        // });
       }
+      loadMusic();
+
+      //play music
+      playButton.addEventListener("click", function () {
+        if (
+          currentIndexTrack >= 0 &&
+          currentIndexTrack <= musicList.length - 1
+        ) {
+          if (audio.paused) {
+            loadMusic();
+            playButton.innerText = "❚❚";
+            // Start playing if paused
+          } else {
+            playButton.innerText = "▶";
+            audio.pause(); // Pause if playing
+          }
+        }
+      });
 
       //render all music
-      function renderAllMusic() {
+      function renderAllMusic(arrayListMusic) {
         var containerAllMusic = document.getElementById("container-all-music");
+        containerAllMusic.innerHTML = "";
 
-        musicList.forEach(function (track, i) {
+        arrayListMusic.forEach(function (track, i) {
           var div = document.createElement("div");
           div.classList.add("track");
           div.innerHTML = `<p>${track.name} - ${track.singer}</p>`;
@@ -216,57 +248,20 @@
           });
         });
       }
-      renderAllMusic();
-
-      //render favor music list
-      function renderFavorList(favorList) {
-        var containerList = document.getElementById("container-favor-list");
-        containerList.innerHTML = "";
-        favorList.forEach(function (favorTrack, i) {
-          var div = document.createElement("div");
-          div.classList.add("track");
-          div.innerHTML = `<p>${favorTrack.name} - ${favorTrack.singer}</p>`;
-          containerList.appendChild(div);
-        });
-      }
-
-      function toggleFavorList(currentIndexTrack) {
-        var track = musicList.find(function (item, i) {
-          return item.id === currentIndexTrack;
-        });
-        console.log("track", track);
-        if (track) {
-          track.isFavor = !track.isFavor; // Toggle isFavor
-          if (track.isFavor) {
-            favor.innerHTML = "💖";
-            favorList.push(track); // Add to favorite list
-            console.log("favorList", favorList, "track.isFavor", track.isFavor);
-          } else {
-            favor.innerHTML = "🤍";
-            favorList = favorList.filter(
-              (item) => item.id !== currentIndexTrack
-            ); // Remove from favorite list
-            console.log("favorList", favorList, "track.isFavor", track.isFavor);
-          }
-          renderFavorList(favorList); // Update the UI
+      renderAllMusic(musicList);
+      // shuffle music
+      function shuffle() {
+        var shuffleList = [...musicList];
+        for (var i = shuffleList.length - 1; i > 0; i--) {
+          var randomIndex = Math.floor(Math.random() * i);
+          [shuffleList[randomIndex], shuffleList[i]] = [
+            shuffleList[i],
+            shuffleList[randomIndex],
+          ];
         }
+        renderAllMusic(shuffleList);
+        return shuffleList;
       }
-
-      //play music
-      playButton.addEventListener("click", function () {
-        if (
-          currentIndexTrack >= 0 &&
-          currentIndexTrack <= musicList.length - 1
-        ) {
-          if (audio.paused) {
-            loadMusic(); // Start playing if paused
-            playButton.innerText = "❚❚";
-          } else {
-            audio.pause(); // Pause if playing
-            playButton.innerText = "▶";
-          }
-        }
-      });
 
       //next music
       function next() {
@@ -275,6 +270,7 @@
           currentIndexTrack = 0;
         }
         loadMusic();
+        playButton.innerText = "❚❚";
       }
 
       //previous music
@@ -283,9 +279,46 @@
         if (currentIndexTrack < 0) {
           currentIndexTrack = musicList.length - 1;
         }
-        loadMusic();
+       
+          playButton.innerText = "❚❚";
+          loadMusic(); // Start playing if paused
+     
       }
 
+      //render favor music list
+      //   function renderFavorList(favorList) {
+      //     var containerList = document.getElementById("container-favor-list");
+      //     containerList.innerHTML = "";
+      //     favorList.forEach(function (favorTrack, i) {
+      //       var div = document.createElement("div");
+      //       div.classList.add("track");
+      //       div.innerHTML = `<p>${favorTrack.name} - ${favorTrack.singer}</p>`;
+      //       containerList.appendChild(div);
+      //     });
+      //   }
+
+      //   function toggleFavorList(currentIndexTrack) {
+      //     var track = musicList.find(function (item, i) {
+      //       return item.id === currentIndexTrack;
+      //     });
+      //     console.log("track", track);
+      //     if (track) {
+      //       track.isFavor = !track.isFavor; // Toggle isFavor
+      //       if (track.isFavor) {
+      //         favor.innerHTML = "💖";
+      //         favorList.push(track); // Add to favorite list
+      //         // console.log("favorList", favorList, "track.isFavor", track.isFavor);
+      //       } else {
+      //         favor.innerHTML = "🤍";
+      //         favorList = favorList.filter(
+      //           (item) => item.id !== currentIndexTrack
+      //         ); // Remove from favorite list
+      //         // console.log("favorList", favorList, "track.isFavor", track.isFavor);
+      //       }
+      //       renderFavorList(favorList); // Update the UI
+      //     }
+      //   }
+      // ***************************************metadata**********************************************
       function formatTime(time) {
         var minuets = Math.floor(time / 60);
         var seconds = Math.floor(time % 60);
