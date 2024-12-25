@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
     <title>Document</title>
     <style>
       body {
@@ -95,6 +99,12 @@
       .active {
         color: red;
       }
+      .white {
+        color: white;
+      }
+      .red {
+        color: red;
+      }
     </style>
   </head>
   <body>
@@ -111,7 +121,7 @@
           <button id="previous">◀◀</button>
           <button id="play">◀</button>
           <button id="next">▶▶</button>
-          <button id="favor">🤍</button>
+          <button id="favor"></button>
           <button id="shuffle">⇄</button>
         </div>
       </div>
@@ -149,10 +159,10 @@
         },
         {
           id: 2,
-          name: "Bad Blood",
-          singer: "Tailor",
+          name: "one and only",
+          singer: "AADEL",
           isFavor: false,
-          src: "./files/09. - Taylor Swift - Bad Blood (128).mp3",
+          src: "./files/ADELE_-_One_And_Only.mp3",
         },
       ];
       var currentIndexTrack = 0;
@@ -180,6 +190,11 @@
           shuffle();
         }
       });
+      // add to favor list
+      favor.addEventListener("click", function () {
+          toggleFavorList(currentIndexTrack);
+        }); 
+        
 
       //load track music
       function loadMusic() {
@@ -189,18 +204,10 @@
           musicList[currentIndexTrack].name;
         document.querySelector(".singer").innerHTML =
           musicList[currentIndexTrack].singer;
-        // if (musicList[currentIndexTrack].isFavor) {
-        //   favor.innerHTML = "💖";
-        // } else {
-        //   favor.innerHTML = "🤍";
-        // }
-        favor.innerHTML = musicList[currentIndexTrack].isFavor ? "💖" : "🤍";
-
-        audio.load();
-        audio.play();
-        // favor.addEventListener("click", function () {
-        //   toggleFavorList(currentIndexTrack);
-        // });
+        favor.innerHTML = musicList[currentIndexTrack].isFavor
+          ? '<i class="fa fa-heart red"></i>'
+          : '<i class="fa fa-heart white"></i>';
+        audio.load();       
       }
       loadMusic();
 
@@ -211,7 +218,8 @@
           currentIndexTrack <= musicList.length - 1
         ) {
           if (audio.paused) {
-            loadMusic();
+            console.log("hi");
+            audio.play();
             playButton.innerText = "❚❚";
             // Start playing if paused
           } else {
@@ -233,18 +241,9 @@
           containerAllMusic.appendChild(div);
           div.addEventListener("click", function () {
             currentIndexTrack = track.id;
-            if (
-              currentIndexTrack >= 0 &&
-              currentIndexTrack <= musicList.length - 1
-            ) {
-              if (audio.paused) {
-                loadMusic(); // Start playing if paused
-                playButton.innerText = "❚❚";
-              } else {
-                audio.pause(); // Pause if playing
-                playButton.innerText = "▶";
-              }
-            }
+            loadMusic();
+            audio.play();
+            playButton.innerText = "❚❚";
           });
         });
       }
@@ -270,6 +269,7 @@
           currentIndexTrack = 0;
         }
         loadMusic();
+        audio.play();
         playButton.innerText = "❚❚";
       }
 
@@ -279,45 +279,22 @@
         if (currentIndexTrack < 0) {
           currentIndexTrack = musicList.length - 1;
         }
-       
-          playButton.innerText = "❚❚";
-          loadMusic(); // Start playing if paused
-     
+        loadMusic();
+        audio.play();
+        playButton.innerText = "❚❚"; // Start playing if paused
       }
 
-      //render favor music list
-      //   function renderFavorList(favorList) {
-      //     var containerList = document.getElementById("container-favor-list");
-      //     containerList.innerHTML = "";
-      //     favorList.forEach(function (favorTrack, i) {
-      //       var div = document.createElement("div");
-      //       div.classList.add("track");
-      //       div.innerHTML = `<p>${favorTrack.name} - ${favorTrack.singer}</p>`;
-      //       containerList.appendChild(div);
-      //     });
-      //   }
-
-      //   function toggleFavorList(currentIndexTrack) {
-      //     var track = musicList.find(function (item, i) {
-      //       return item.id === currentIndexTrack;
-      //     });
-      //     console.log("track", track);
-      //     if (track) {
-      //       track.isFavor = !track.isFavor; // Toggle isFavor
-      //       if (track.isFavor) {
-      //         favor.innerHTML = "💖";
-      //         favorList.push(track); // Add to favorite list
-      //         // console.log("favorList", favorList, "track.isFavor", track.isFavor);
-      //       } else {
-      //         favor.innerHTML = "🤍";
-      //         favorList = favorList.filter(
-      //           (item) => item.id !== currentIndexTrack
-      //         ); // Remove from favorite list
-      //         // console.log("favorList", favorList, "track.isFavor", track.isFavor);
-      //       }
-      //       renderFavorList(favorList); // Update the UI
-      //     }
-      //   }
+    
+      function toggleFavorList(currentIndexTrack) {
+        var track = musicList.find(function (item, i) {
+          return item.id === currentIndexTrack;
+        });
+        track.isFavor = !track.isFavor; // Toggle isFavor original array
+        console.log("musicList", musicList,track.isFavor,);
+        favor.innerHTML = track.isFavor
+          ? '<i class="fa fa-heart red"></i>'
+          : '<i class="fa fa-heart white"></i>';
+      }
       // ***************************************metadata**********************************************
       function formatTime(time) {
         var minuets = Math.floor(time / 60);
