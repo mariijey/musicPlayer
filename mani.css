@@ -1,0 +1,220 @@
+body {
+    background-color: #e3edf7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .time-music {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .name-music {
+    margin-bottom: 15px;
+    font-size: 24px;
+    color: #333;
+    font-weight: bold;
+  }
+  #audio-player {
+    -webkit-appearance: none;
+    width: 100%;
+    background: #f4f4f4;
+    margin: 15px 0;
+    border-radius: 15px;
+    height: 5px;
+  }
+  .box-player {
+    display: flex;
+    margin-right: 10px;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    text-align: center;
+    width: 350px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+      -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+    text-align: center;
+    border-radius: 40px;
+    height: 500px;
+  }
+  .box-list {
+    overflow: hidden;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 350px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+      -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+    text-align: center;
+    border-radius: 40px;
+    height: 450px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 500px;
+  }
+  .wrap-box-player{
+    padding: 25px 30px;
+  }
+
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .middle-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  .middle-box p,
+  .middle-box span {
+    color: #4d4d4d;
+  }
+  .box-player button {
+    border-radius: 50%;
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
+      rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+    border: none;
+    background-color: #e3edf7;
+    cursor: pointer;
+  }
+  .banner {
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 5s ease infinite;
+    height: 150px;
+  }
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .progress-bar {
+    width: 100%;
+  }
+
+  .container-controllers {
+    display: flex;
+    width: 100%;
+    margin-top: 30px;
+  }
+
+  .play-controllers {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+  }
+  .play-controllers button {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+      -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4d4d4d;
+    font-weight: 900;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  .play-controllers button:hover{
+    background-color: #e6d7dd;
+  }
+
+  .container-all-music {
+    padding: 20px;
+  }
+
+  .track {
+    display: flex;
+    width: 90%;
+    justify-content: flex-start;
+    color: #4d4d4d;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+      -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+    margin-top: 10px;
+    padding-left: 20px;
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  .top-icon i {
+    color: #4d4d4d;
+    font-size: 25px;
+    cursor: pointer;
+  }
+  .box-player h1 {
+    color: gray;
+  }
+  .active {
+    color: red;
+  }
+  .white {
+    color: white;
+  }
+  .red {
+    color: red;
+  }
+  /*  */
+
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+      -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+    background-color: dimgrey;
+  }
+
+  .tabs div {
+    padding: 20px 0px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+  }
+
+  .tabs div:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .tabs div.active {
+    color: #fff;
+    border-bottom: 3px solid #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
