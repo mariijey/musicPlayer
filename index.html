@@ -10,7 +10,7 @@
     <title>Document</title>
     <style>
       body {
-        background-color: #f4f4f4;
+        background-color: #e3edf7;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -21,14 +21,7 @@
         width: 100%;
         justify-content: space-between;
       }
-      .box-player {
-        width: 350px;
-        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-        padding: 25px;
-        text-align: center;
-        border-radius: 15px;
-        background-color: white;
-      }
+
       .name-music {
         margin-bottom: 15px;
         font-size: 24px;
@@ -43,14 +36,55 @@
         border-radius: 15px;
         height: 5px;
       }
-      .box-player {
+      .box-player,.box-list {
         display: flex;
         margin-right: 10px;
         flex-direction: column;
-        justify-content: center;
+        /* justify-content: center; */
         align-items: center;
         text-align: center;
-        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        width: 350px;
+        box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+          -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+        padding: 25px 30px;
+        text-align: center;
+        border-radius: 40px;
+        height: 450px;
+      }
+      .box-list{
+        padding-top: 0px;
+        overflow: hidden;
+      }
+      .tabs {
+        padding: 20px 30px;
+        width: 100%;
+        background-color: cadetblue;
+        display: flex;
+      }
+      .tabs span {
+        cursor: pointer;
+        width: 50%;
+        text-align: center;
+        display: inline-block;
+        height: 100%;
+      }
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        margin-bottom: 40px;
+      }
+    
+      .middle-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 75%;
+      }
+      .middle-box p,
+      .middle-box span {
+        color: #4d4d4d;
       }
       .box-player button {
         border-radius: 50%;
@@ -61,34 +95,69 @@
         box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset,
           rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
         border: none;
+        background-color: #e3edf7;
+        cursor: pointer
+      }
+      .banner {
+        width: 150px;
+        height: 150px;
+        border-radius: 15px;
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradient 5s ease infinite;
+        height: 150px;
+      }
+      @keyframes gradient {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .progress-bar {
+        width: 100%;
       }
 
       .container-controllers {
         display: flex;
+        width: 100%;
+        margin-top: 30px;
       }
 
-      #shuffle,
-      #favor {
-        border-radius: 10px;
-        font-size: 25px;
-        background-color: transparent;
-        transform: translate(70px, 10px);
-        width: 40px;
-        height: 40px;
-        padding: 0px;
-        text-align: center;
-        /* display: flex; */
-        justify-content: center;
-        align-items: center;
+      .play-controllers {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
       }
-      #shuffle {
-        transform: translate(70px, 10px);
+      .play-controllers button {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
+          -6px -6px 10px -1px rgba(255, 255, 255, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4d4d4d;
+        font-weight: 900;
+        font-size: 20px;
+        cursor: pointer;
       }
 
       .track {
         display: flex;
         width: 100%;
         justify-content: flex-start;
+      }
+      .top-icon i{
+        color: #4d4d4d;
+        font-size: 25px;
+        cursor: pointer;
       }
       #container-favor-list {
         width: 100%;
@@ -100,28 +169,49 @@
         color: red;
       }
       .white {
-        color: white;
+        color: white
       }
       .red {
         color: red;
       }
+      .tabs span:hover{
+        background-color: dimgrey;
+      }
+
     </style>
   </head>
   <body>
     <div class="box-player">
-      <p class="name-music"></p>
-      <span class="singer"></span>
-      <input type="range" id="audio-player" min="0" value="0" />
-      <div class="time-music">
-        <span class="current-time">00:00</span>
-        <span class="total-time">00:00</span>
+      <div class="top-bar">
+        <div class="top-icon">
+          <i class="fa fa-th-list"></i>
+        </div>
+        <div class="top-icon">
+          <i class="fa fa-moon-o"></i>
+        </div>
+        <div class="top-icon">
+          <i class="fa fa-bookmark-o"></i>
+        </div>
       </div>
+      <div class="middle-box">
+        <div class="banner"></div>
+        <p class="name-music"></p>
+        <span class="singer"></span>
+      </div>
+      <div class="progress-bar">
+        <input type="range" id="audio-player" min="0" value="0" />
+        <div class="time-music">
+          <span class="current-time">00:00</span>
+          <span class="total-time">00:00</span>
+        </div>
+      </div>
+
       <div class="container-controllers">
         <div class="play-controllers" id="controllers">
-          <button id="previous">◀◀</button>
-          <button id="play">◀</button>
-          <button id="next">▶▶</button>
           <button id="favor"></button>
+          <button id="previous">◀◀</button>
+          <button id="play">▶</button>
+          <button id="next">▶▶</button>         
           <button id="shuffle">⇄</button>
         </div>
       </div>
@@ -129,16 +219,20 @@
         Your browser does not support the audio element.
       </audio>
     </div>
-    <!-- list of favor tracks -->
-    <div class="box-player">
-      <h1>Favor List</h1>
-      <div id="container-favor-list"></div>
-    </div>
     <!-- list all tracks -->
-    <div class="box-player">
-      <h1>All Tracks</h1>
-      <div id="container-all-music"></div>
-    </div>
+     <div class="">
+      <div class="box-list">
+        <div class="tabs">
+          <span>all music</span>
+          <span>favor music</span>
+        </div>
+        
+        <div id="container-all-music"></div>
+       
+      </div>
+
+     </div>
+   
 
     <script>
       //constants
@@ -192,9 +286,8 @@
       });
       // add to favor list
       favor.addEventListener("click", function () {
-          toggleFavorList(currentIndexTrack);
-        }); 
-        
+        toggleFavorList(currentIndexTrack);
+      });
 
       //load track music
       function loadMusic() {
@@ -207,7 +300,7 @@
         favor.innerHTML = musicList[currentIndexTrack].isFavor
           ? '<i class="fa fa-heart red"></i>'
           : '<i class="fa fa-heart white"></i>';
-        audio.load();       
+        audio.load();
       }
       loadMusic();
 
@@ -284,16 +377,15 @@
         playButton.innerText = "❚❚"; // Start playing if paused
       }
 
-    
       function toggleFavorList(currentIndexTrack) {
         var track = musicList.find(function (item, i) {
           return item.id === currentIndexTrack;
         });
         track.isFavor = !track.isFavor; // Toggle isFavor original array
-        console.log("musicList", musicList,track.isFavor,);
+        console.log("musicList", musicList, track.isFavor);
         favor.innerHTML = track.isFavor
           ? '<i class="fa fa-heart red"></i>'
-          : '<i class="fa fa-heart white"></i>';
+          : '<i class="fa fa-heart-o white"></i>';
       }
       // ***************************************metadata**********************************************
       function formatTime(time) {
